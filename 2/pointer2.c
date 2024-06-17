@@ -23,5 +23,5 @@ int main()
 各データ型変数のメモリサイズ
 char 1byte
 int 4byte
-double 1byte
+double 8byte
 */
