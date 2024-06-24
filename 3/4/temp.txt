@@ -1,0 +1,3 @@
+  PID TTY           TIME CMD
+ 1724 ttys000    0:00.85 /bin/zsh --login -i
+11917 ttys005    0:01.26 /bin/zsh -il
