@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket チャット</title>
+    <style>
+        #chat {
+            width: 300px;
+            height: 200px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+        }
+
+        #message {
+            width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <label for="name">名前:</label>
+        <input type="text" id="name" placeholder="名前を入力">
+    </div>
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="メッセージを入力">
+    <input type="button" id="send_button" value="送信">
+    <script>
+        // WebSocketクライアントの生成
+        const ws = new WebSocket('ws://localhost:8080');
+        const chat = document.getElementById('chat');
+        const messageInput = document.getElementById('message');
+        const nameInput = document.getElementById('name');
+
+        // 接続時の処理
+        ws.addEventListener('open', () => {
+            console.log('WebSocket に接続しました');
+        });
+
+        // サーバからのメッセージ受信時の処理
+        ws.addEventListener('message', (event) => {
+            console.log('サーバからのメッセージ:', event.data);
+            const messageElem = document.createElement('div');
+            messageElem.textContent = event.data;
+            chat.appendChild(messageElem);
+            chat.scrollTop = chat.scrollHeight; // 最新メッセージまでスクロール
+        });
+
+        // ボタンクリック時の処理
+        document.getElementById('send_button').addEventListener('click', () => {
+            const message = messageInput.value;
+            const name = nameInput.value;
+            if (name === '') {
+                alert('名前を入力してください');
+                return;
+            }
+            const fullMessage = name + ': ' + message;
+            ws.send(fullMessage);
+            console.log('送信メッセージ:', fullMessage);
+            messageInput.value = ''; // 送信後に入力フィールドをクリア
+        });
+
+        // Enterキーでメッセージ送信
+        messageInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                document.getElementById('send_button').click();
+            }
+        });
+    </script>
+</body>
+
+</html>
